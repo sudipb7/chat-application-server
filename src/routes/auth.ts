@@ -1,9 +1,20 @@
 import { Router } from "express";
 
-import { signUp } from "../controllers/auth";
+import AuthController from "../controllers/auth";
+import { Routes } from "../types";
 
-const router: Router = Router();
+export default class AuthRoutes implements Routes {
+  public path: string;
+  public router: Router = Router();
+  public authController = new AuthController();
 
-router.route("/sign-up").post(signUp);
+  constructor() {
+    this.path = "/auth";
+    this.initializeRoutes();
+  }
 
-export default router;
+  private initializeRoutes() {
+    this.router.post(`${this.path}/sign-up`, this.authController.signUp);
+    this.router.post(`${this.path}/sign-in`, this.authController.signIn);
+  }
+}
