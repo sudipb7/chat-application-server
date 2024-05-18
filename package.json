@@ -7,7 +7,10 @@
     "start": "node dist/index.js",
     "dev": "nodemon",
     "build": "tsc",
-    "prettier": "prettier --write \"**/*.+(js|ts|json|yaml|md)\""
+    "prettier": "prettier --write \"**/*.+(js|ts|json|yaml|md)\"",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -24,10 +27,12 @@
     "@types/nodemailer": "^6.4.15",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
+    "prisma": "^5.14.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@prisma/client": "5.14.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

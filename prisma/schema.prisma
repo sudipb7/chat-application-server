@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MemberRole {
+  ADMIN
+  MEMBER
+  MODERATOR
+}
+
+enum MessageReaction {
+  LIKE
+  LOVE
+  HAHA
+  WOW
+  SAD
+  ANGRY
+  THUMBS_UP
+  THUMBS_DOWN
+  LAUGH
+  PARTY_FACE
+  HOLDING_TEARS
+  WINK
+  SLEEPY
+  SICK
+  ANGEL
+  DEVIL
+  CRY
+  THINK
+  EYE
+  HEART
+  STAR
+  ROCKET
+  FIRE
+  CHECK
+  QUESTION
+  EXCLAMATION
+  PLUS
+  MINUS
+  ARROW_UP
+  ARROW_DOWN
+  ARROW_LEFT
+  ARROW_RIGHT
+}
+
+model User {
+  id       String @id @default(cuid())
+  name     String
+  image    String
+  email    String @unique
+  password String
+
+  members Member[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Member {
+  id          String     @id @default(cuid())
+  userId      String     @map("user_id")
+  chatGroupId String     @map("chat_group_id")
+  role        MemberRole @default(MEMBER)
+
+  messages             Message[]
+  directMessages       DirectMessage[]
+  privateConversations PrivateConversation[]
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatGroup ChatGroup @relation(fields: [chatGroupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("members")
+}
+
+model ChatGroup {
+  id          String  @id @default(cuid())
+  name        String
+  image       String
+  description String?
+
+  members  Member[]
+  messages Message[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("chat_groups")
+}
+
+model Message {
+  id          String            @id @default(cuid())
+  text        String?
+  attachments String[]
+  reactions   MessageReaction[]
+  chatGroupId String            @map("chat_group_id")
+  memberId    String            @map("member_id")
+
+  member    Member    @relation(fields: [memberId], references: [id])
+  chatGroup ChatGroup @relation(fields: [chatGroupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("messages")
+}
+
+model PrivateConversation {
+  id String @id @default(cuid())
+
+  members  Member[]
+  messages DirectMessage[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("private_conversations")
+}
+
+model DirectMessage {
+  id             String            @id @default(cuid())
+  text           String?
+  attachments    String[]
+  reactions      MessageReaction[]
+  conversationId String            @map("conversation_id")
+  memberId       String            @map("member_id")
+
+  member       Member              @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  conversation PrivateConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("direct_messages")
+}

@@ -1,13 +1,25 @@
+import cors from "cors";
 import http from "http";
+import express from "express";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
 
-import App from "./app";
-import AuthRoutes from "./routes/auth";
-import { PORT } from "./config";
+import { NODE_ENV, PORT, corsOptions } from "./config";
+import userRouter from "./routes/user";
 
-const app = new App([new AuthRoutes()]);
+const app = express();
+const httpServer = http.createServer(app);
 
-const server = http.createServer(app.expressApp);
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(cors(corsOptions));
+app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"));
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} in ${app.environment} mode`);
+// Routes
+app.use("/user", userRouter);
+
+httpServer.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} in '${NODE_ENV}' mode`);
 });
