@@ -10,6 +10,9 @@ export const {
   NODEMAILER_EMAIL,
   NODEMAILER_SERVICE = "gmail",
   NODEMAILER_PASSWORD,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
 } = process.env;
 
 export const corsOptions: CorsOptions = {

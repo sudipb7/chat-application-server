@@ -53,7 +53,6 @@ model User {
   name     String
   image    String
   email    String @unique
-  password String
 
   members Member[]
 

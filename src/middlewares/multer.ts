@@ -5,9 +5,23 @@ const storage = multer.diskStorage({
     cb(null, "public/temp");
   },
   filename: (_, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 100000);
-    const extension = file.mimetype.split("/")[1];
-    cb(null, `${file.fieldname}-${uniqueSuffix}.${extension}`);
+    let fileExtension = "";
+    if (file.originalname.split(".").length > 1) {
+      fileExtension = file.originalname.substring(file.originalname.lastIndexOf("."));
+    }
+    const fileNameWithoutExtension = file.originalname
+      .split(".")
+      .join("-")
+      .toLowerCase()
+      ?.split(".")[0];
+    cb(
+      null,
+      fileNameWithoutExtension ||
+        "" +
+          Date.now() +
+          Math.ceil(Math.random() * 1e5) + // avoid rare name conflict
+          fileExtension
+    );
   },
 });
 
