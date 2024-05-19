@@ -4,7 +4,7 @@ import { db } from "../utils/db";
 import { userSchema, zodError } from "../utils/schemas";
 import { deleteFile, uploadFile } from "../utils/cloudinary";
 
-export const getUsers: RequestHandler = async (req, res) => {
+const getUsers: RequestHandler = async (req, res) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 5;
@@ -40,7 +40,7 @@ export const getUsers: RequestHandler = async (req, res) => {
   }
 };
 
-export const getUserById: RequestHandler = async (req, res) => {
+const getUserById: RequestHandler = async (req, res) => {
   try {
     if (!req.params.id) {
       return res.status(400).json({ message: "User ID is required" });
@@ -55,7 +55,7 @@ export const getUserById: RequestHandler = async (req, res) => {
   }
 };
 
-export const createUser: RequestHandler = async (req, res) => {
+const createUser: RequestHandler = async (req, res) => {
   try {
     const validatedData = userSchema.safeParse(req.body);
     if (!validatedData.success) {
@@ -89,7 +89,7 @@ export const createUser: RequestHandler = async (req, res) => {
   }
 };
 
-export const updateUser: RequestHandler = async (req, res) => {
+const updateUser: RequestHandler = async (req, res) => {
   try {
     const validatedData = userSchema.safeParse(req.body);
     if (!validatedData.success) {
@@ -128,7 +128,7 @@ export const updateUser: RequestHandler = async (req, res) => {
   }
 };
 
-export const deleteUser: RequestHandler = async (req, res) => {
+const deleteUser: RequestHandler = async (req, res) => {
   try {
     if (!req.params.id) {
       return res.status(400).json({ message: "User ID is required" });
@@ -152,3 +152,5 @@ export const deleteUser: RequestHandler = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export { getUsers, getUserById, createUser, updateUser, deleteUser };

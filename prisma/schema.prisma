@@ -49,10 +49,10 @@ enum MessageReaction {
 }
 
 model User {
-  id       String @id @default(cuid())
-  name     String
-  image    String
-  email    String @unique
+  id    String @id @default(cuid())
+  name  String
+  image String
+  email String @unique
 
   members Member[]
 
@@ -85,7 +85,9 @@ model ChatGroup {
   id          String  @id @default(cuid())
   name        String
   image       String
+  inviteCode  String  @unique @map("invite_code")
   description String?
+  isPublic    Boolean @default(false) @map("is_public")
 
   members  Member[]
   messages Message[]
