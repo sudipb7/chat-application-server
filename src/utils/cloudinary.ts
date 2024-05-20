@@ -7,15 +7,20 @@ cloudinary.config(cloudinaryOptions);
 
 export const uploadFile = async (
   filePath: string,
-  folder: "attachment" | "avatar" | "chat-avatar"
+  folder: "attachment" | "avatar" | "chat-avatar",
+  fromProvider = false
 ) => {
   try {
     const response = await cloudinary.uploader.upload(filePath, { folder });
-    fs.unlinkSync(filePath);
+    if (!fromProvider) {
+      fs.unlinkSync(filePath);
+    }
     return response.secure_url;
   } catch (error) {
     console.log("UPLOAD_FILE", error);
-    fs.unlinkSync(filePath);
+    if (!fromProvider) {
+      fs.unlinkSync(filePath);
+    }
     return null;
   }
 };

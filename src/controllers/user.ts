@@ -55,6 +55,24 @@ const getUserById: RequestHandler = async (req, res) => {
   }
 };
 
+const getUserByEmail: RequestHandler = async (req, res) => {
+  try {
+    const includeMembers = req.query.includeMembers === "true";
+    const include = includeMembers ? { members: true } : {};
+
+    if (!req.params.email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await db.user.findUnique({ where: { email: req.params.email }, include });
+
+    return res.status(200).json({ message: "User fetched successfully", data: { user } });
+  } catch (error) {
+    console.log("GET_USER_BY_EMAIL", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const createUser: RequestHandler = async (req, res) => {
   try {
     const validatedData = userSchema.safeParse(req.body);
@@ -69,7 +87,7 @@ const createUser: RequestHandler = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const imageUrl = await uploadFile(image, "avatar");
+    const imageUrl = await uploadFile(image, "avatar", true);
     if (!imageUrl) {
       return res.status(500).json({ message: "Failed to upload image" });
     }
@@ -153,4 +171,4 @@ const deleteUser: RequestHandler = async (req, res) => {
   }
 };
 
-export { getUsers, getUserById, createUser, updateUser, deleteUser };
+export { getUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser };
